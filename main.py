@@ -21,12 +21,18 @@ MyBL:
         
         Label:
                 font_size: "30sp"
+                multiline: True
+                text_size: self.width * 0.98, None
+                size_hint_x: 1.0
+                size_hint_y: None
+                height: self.texture_size[1] + 15
                 text: root.data_label
         
         TextInput:
                 id: Inp
                 multiline: False
                 padding: [15, 15, 15, 15]
+                on_text: app.progress()
         
         Button:
                 text: "Поиск по названию"
@@ -40,21 +46,21 @@ MyBL:
 class MyBL(BoxLayout):
     data_label = StringProperty("Thr0TT1e")
     
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-        SERVER, PORT = "localhost", 9491
-
-        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        print(f"SERVER: {SERVER}, PORT: {PORT}")
-        # self.client.connect((SERVER, PORT))
-        # self.client.sendall(bytes("979879789", "UTF-8"))
-
-        threading.Thread(target=self.get_data).start()
+    # def __init__(self, **kwargs):
+    #     super().__init__(**kwargs)
+    #
+    #     SERVER, PORT = "localhost", 1488
+    #
+    #     self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    #     print(f"SERVER: {SERVER}, PORT: {PORT}")
+    #     self.client.connect((SERVER, PORT))
+    #     self.client.sendall(bytes("Android клиент", "UTF-8"))
+    #
+    #     threading.Thread(target=self.get_data).start()
 
     def callback(self):
         print("sendall()")
-        self.client.sendall(bytes("Поиск по названию", "UTF-8"))
+        self.client.sendall(bytes(self.ids.Inp.text, "UTF-8"))
 
     def get_data(self):
         while App.get_running_app().running:
@@ -70,6 +76,9 @@ class MyBL(BoxLayout):
 
 class MyApp(App):
     running = True
+
+    def progress(self):
+        text = self.root.ids.Inp.text
 
     def build(self):
         return Builder.load_string(KV)
